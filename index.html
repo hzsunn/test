@@ -35,7 +35,32 @@
       <div id="canva">
       <canvas id="canvas"></canvas>
     </div>
-    <audio src="./music.mp3" autoplay loop></audio>
+    <audio id="bgMusic" loop>
+  <source src="img/hpbd.mp3" type="audio/mpeg">
+</audio>
     <script src="main.js"></script>
+<script>
+const audio = document.getElementById('bgMusic');
+
+// Kích hoạt khi có thao tác chạm/vuốt
+let started = false;
+
+function tryPlayMusic() {
+  if (!started) {
+    audio.play().catch((e) => {
+      console.log("Tạm thời chưa thể phát nhạc:", e);
+    });
+    started = true;
+  }
+}
+
+// Vuốt hoặc chạm trên màn hình
+document.addEventListener('touchstart', tryPlayMusic);
+document.addEventListener('wheel', tryPlayMusic); // zoom chuột
+document.addEventListener('gesturestart', tryPlayMusic); // zoom cảm ứng (Safari)
+
+// Optional: click chuột nếu dùng trên desktop
+document.addEventListener('click', tryPlayMusic);
+</script>
 </body>
 </html>
