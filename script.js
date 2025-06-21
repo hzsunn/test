@@ -1,3 +1,34 @@
+let controls;
+controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true; // làm chuyển động mượt
+controls.dampingFactor = 0.05;
+controls.minDistance = 10;     // không zoom quá gần
+controls.maxDistance = 100;    // không zoom quá xa
+controls.enablePan = false;    // không cho kéo ngang dọc
+function animate() {
+  requestAnimationFrame(animate);
+
+  earth.rotation.y += 0.002;
+
+  satellites.forEach(sat => {
+    sat.userData.angle += sat.userData.speed;
+    const angle = sat.userData.angle;
+    const r = sat.userData.radius;
+    const tilt = sat.userData.tilt;
+    const x = Math.cos(angle) * r;
+    const z = Math.sin(angle) * r;
+    const y = Math.sin(angle * 2) * tilt * 10;
+    sat.position.set(x, y, z);
+    sat.lookAt(earth.position);
+  });
+
+  stars.rotation.y += 0.0005;
+  ringText.rotation.z += 0.002;
+
+  controls.update(); // << THÊM DÒNG NÀY
+
+  renderer.render(scene, camera);
+}
 const container = document.getElementById('container');
 
 let scene, camera, renderer;
