@@ -1,66 +1,32 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>I Love You</title>
-    <link rel="shortcut icon" href="./icon.png" type="image/x-icon">
-    <link rel="stylesheet" href="main.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chúc Mừng Sinh Nhật Vanh</title>
+  <link rel="stylesheet" href="banh.css" />
 </head>
 <body>
-    
-    <div id="drag-container">
-        <div id="spin-container">
-          <img src="img/img4.JPG" alt="">
-          <img src="img/img1.JPG" alt="">
-          <img src="img/img2.JPG" alt="">
-          <img src="img/img3.JPG" alt="">
-          <img src="img/img6.PNG" alt="">
-          <img src="img/img5.jpg" alt="">
-          <img src="img/img7.JPG" alt="">
-          <img src="img/img8.JPG" alt="">
-          
-            <p style="color: pink;">Huyền</p>
-          
-        
-        </div>
-        <div id="ground"></div>
-      </div>
-      
-      <div id="music-container"></div>
-      <div id="canva">
-      <canvas id="canvas"></canvas>
+  <div class="banner">
+    <button id="giftBtn">🎁 MỞ QUÀ NGAY</button>
+    <div id="hbdText" class="hidden">🎉 CHÚC MỪNG SINH NHẬT VANH 🎉</div>
+    <div class="slider hidden" style="--quantity: 10">
+      <div class="item" style="--position: 1"><img src="images/anh1.jpg" alt="Anh1"></div>
+      <div class="item" style="--position: 2"><img src="images/anh2.jpg" alt="Anh2"></div>
+      <div class="item" style="--position: 3"><img src="images/anh3.jpg" alt="Anh3"></div>
+      <div class="item" style="--position: 4"><img src="images/anh4.jpg" alt="Anh4"></div>
+      <div class="item" style="--position: 5"><img src="images/anh5.jpg" alt="Anh5"></div>
+      <div class="item" style="--position: 6"><img src="images/anh6.jpg" alt="Anh6"></div>
+      <div class="item" style="--position: 7"><img src="images/anh7.jpg" alt="Anh7"></div>
+      <div class="item" style="--position: 8"><img src="images/anh8.jpg" alt="Anh8"></div>
+      <div class="item" style="--position: 9"><img src="images/anh9.jpg" alt="Anh9"></div>
+      <div class="item" style="--position: 10"><img src="images/anh10.jpg" alt="Anh10"></div>
     </div>
-    <audio id="bgMusic" loop>
-  <source src="img/hpbd.mp3" type="audio/mpeg">
-</audio>
-    <script src="main.js"></script>
-<script>
-const audio = document.getElementById('bgMusic');
+    <img class="cake hidden" src="images/cake.png" alt="Bánh sinh nhật">
+    <audio id="birthday-audio" src="hpbd.mp3" preload="auto"></audio>
+    <canvas id="fireworks"></canvas>
+  </div>
 
-// Kích hoạt khi có thao tác chạm/vuốt
-let started = false;
-
-function tryPlayMusic() {
-  if (!started) {
-    audio.play().catch((e) => {
-      console.log("Tạm thời chưa thể phát nhạc:", e);
-    });
-    started = true;
-  }
-}
-
-// Vuốt hoặc chạm trên màn hình
-document.addEventListener('touchstart', tryPlayMusic);
-document.addEventListener('wheel', tryPlayMusic); // zoom chuột
-document.addEventListener('gesturestart', tryPlayMusic); // zoom cảm ứng (Safari)
-
-// Optional: click chuột nếu dùng trên desktop
-document.addEventListener('click', tryPlayMusic);
-</script>
+  <script src="phaohoa.js"></script>
 </body>
 </html>
