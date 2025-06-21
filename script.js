@@ -1,14 +1,10 @@
 const container = document.getElementById('container');
-let scene, camera, renderer;
-let stars = [], planet, textures = [];
-let imageIndex = 0;
 
-const imagePaths = [
-  'img/1.jpg',
-  'img/2.JPG',
-  'img/3.JPG',
-  // Thêm ảnh tại đây
-];
+let scene, camera, renderer;
+let earth, satellites = [];
+const satelliteCount = 10;
+const starCount = 1000;
+let stars = [];
 
 init();
 animate();
@@ -16,82 +12,102 @@ animate();
 function init() {
   scene = new THREE.Scene();
 
+  // Camera
   camera = new THREE.PerspectiveCamera(
     75, window.innerWidth / window.innerHeight, 0.1, 1000
   );
-  camera.position.z = 20;
+  camera.position.set(0, 15, 35);
 
+  // Renderer
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
   container.appendChild(renderer.domElement);
 
-  // Tải ảnh làm texture
-  const loader = new THREE.TextureLoader();
-  imagePaths.forEach(path => {
-    textures.push(loader.load(path));
-  });
-
-  // Tạo quả cầu địa cầu ở giữa
-  const sphereGeometry = new THREE.SphereGeometry(5, 64, 64);
-  const sphereMaterial = new THREE.MeshStandardMaterial({
-    map: textures[0],
-    roughness: 0.8,
-    metalness: 0.3
-  });
-  planet = new THREE.Mesh(sphereGeometry, sphereMaterial);
-  scene.add(planet);
-
   // Ánh sáng
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-  scene.add(ambientLight);
+  scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+  const light = new THREE.PointLight(0xffffff, 1);
+  light.position.set(50, 50, 50);
+  scene.add(light);
 
-  const pointLight = new THREE.PointLight(0xffffff, 2);
-  pointLight.position.set(50, 50, 50);
-  scene.add(pointLight);
+  // Trái đất
+  const textureLoader = new THREE.TextureLoader();
+  const earthTexture = textureLoader.load('img/earth.jpg');
+  const earthGeometry = new THREE.SphereGeometry(5, 64, 64);
+  const earthMaterial = new THREE.MeshStandardMaterial({ map: earthTexture });
+  earth = new THREE.Mesh(earthGeometry, earthMaterial);
+  scene.add(earth);
 
-  // Tạo các ngôi sao bay xung quanh
-  for (let i = 0; i < 500; i++) {
-    const star = new THREE.Mesh(
-      new THREE.SphereGeometry(0.05, 8, 8),
-      new THREE.MeshBasicMaterial({ color: 0xffffff })
-    );
-    resetStar(star);
-    scene.add(star);
-    stars.push(star);
+  // Vệ tinh (10 ảnh)
+  for (let i = 1; i <= satelliteCount; i++) {
+    const satTexture = textureLoader.load(`img/sat${i}.JPG`);
+    const satMaterial = new THREE.MeshBasicMaterial({
+      map: satTexture,
+      transparent: true,
+      side: THREE.DoubleSide
+    });
+    const satGeometry = new THREE.PlaneGeometry(2, 2);
+    const satMesh = new THREE.Mesh(satGeometry, satMaterial);
+
+    // Gán thông tin quỹ đạo 3D nghiêng
+    satMesh.userData = {
+      radius: 8 + i * 0.5,
+      angle: (i / satelliteCount) * Math.PI * 2,
+      speed: 0.005 + i * 0.001,
+      tilt: (Math.random() * 0.6 - 0.3) // độ nghiêng quỹ đạo
+    };
+    satellites.push(satMesh);
+    scene.add(satMesh);
   }
 
-  // Cập nhật kích thước
+  // Nền sao: nhiều điểm trắng nhỏ di chuyển
+  const starGeometry = new THREE.BufferGeometry();
+  const starPositions = [];
+
+  for (let i = 0; i < starCount; i++) {
+    const x = (Math.random() - 0.5) * 200;
+    const y = (Math.random() - 0.5) * 200;
+    const z = (Math.random() - 0.5) * 200;
+    starPositions.push(x, y, z);
+  }
+
+  starGeometry.setAttribute(
+    'position',
+    new THREE.Float32BufferAttribute(starPositions, 3)
+  );
+
+  const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.7 });
+  const starField = new THREE.Points(starGeometry, starMaterial);
+  scene.add(starField);
+
+  stars = starField;
+
+  // Resize
   window.addEventListener('resize', onWindowResize, false);
-}
-
-function resetStar(star) {
-  const radius = Math.random() * 50 + 10;
-  const theta = Math.random() * 2 * Math.PI;
-  const phi = Math.acos(2 * Math.random() - 1);
-
-  star.position.setFromSphericalCoords(radius, phi, theta);
-  star.userData = { velocity: Math.random() * 0.05 + 0.01 };
 }
 
 function animate() {
   requestAnimationFrame(animate);
 
-  // Xoay hành tinh
-  planet.rotation.y += 0.002;
+  // Quay Trái Đất
+  earth.rotation.y += 0.002;
 
-  // Di chuyển các ngôi sao
-  stars.forEach(star => {
-    star.position.multiplyScalar(1 - star.userData.velocity);
-    if (star.position.length() < 6) resetStar(star);
+  // Di chuyển vệ tinh theo quỹ đạo nghiêng
+  satellites.forEach(sat => {
+    sat.userData.angle += sat.userData.speed;
+    const angle = sat.userData.angle;
+    const r = sat.userData.radius;
+    const tilt = sat.userData.tilt;
+
+    const x = Math.cos(angle) * r;
+    const z = Math.sin(angle) * r;
+    const y = Math.sin(angle * 2) * tilt * 10; // nghiêng nhẹ theo sin
+
+    sat.position.set(x, y, z);
+    sat.lookAt(earth.position); // hướng về Trái Đất
   });
 
-  // Tự động đổi texture sau mỗi 6 giây
-  const currentTime = Date.now();
-  if (!window.lastImageChangeTime || currentTime - window.lastImageChangeTime > 6000) {
-    imageIndex = (imageIndex + 1) % textures.length;
-    planet.material.map = textures[imageIndex];
-    window.lastImageChangeTime = currentTime;
-  }
+  // Quay sao nền nhẹ nhàng
+  stars.rotation.y += 0.0005;
 
   renderer.render(scene, camera);
 }
