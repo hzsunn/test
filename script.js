@@ -1,7 +1,15 @@
-// Danh sách 10 ảnh (thay bằng link thật hoặc ảnh trong thư mục bạn)
+// Danh sách 10 ảnh trong thư mục "img"
 const images = [
-  "sat1.jpg", "sat2.JPG", "earth.jpg", "img4.jpg", "img5.jpg",
-  "img6.jpg", "img7.jpg", "img8.jpg", "img9.jpg", "img10.jpg"
+  "img/earth.jpg",
+  "img/1.JPG",
+  "img/2.JPG",
+  "img/img4.jpg",
+  "img/img5.jpg",
+  "img/img6.jpg",
+  "img/img7.jpg",
+  "img/img8.jpg",
+  "img/img9.jpg",
+  "img/img10.jpg"
 ];
 
 let index = 0;
