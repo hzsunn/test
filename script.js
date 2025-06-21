@@ -115,14 +115,39 @@ function init() {
   stars = new THREE.Points(starGeometry, starMaterial);
   scene.add(stars);
 
-  // Chữ chạy quanh trái đất
-  const ringTextTexture = createTextTexture("🌍 YÊU HUYỀN RẤT NHIỀU 🌍 ");
-  const ringMaterial = new THREE.MeshBasicMaterial({ map: ringTextTexture, transparent: true });
-  const ringGeometry = new THREE.RingGeometry(5.8, 6, 128);
-  ringText = new THREE.Mesh(ringGeometry, ringMaterial);
-  ringText.rotation.x = -Math.PI / 2;
-  ringText.rotation.z = Math.PI / 2;
-  scene.add(ringText);
+  function createTextTexture(text) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 2048;
+  canvas.height = 256;
+  const ctx = canvas.getContext('2d');
+
+  // Nền trong suốt
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Vẽ chữ dài ra như dải băng
+  ctx.font = 'bold 48px Arial';
+  ctx.fillStyle = 'white';
+  ctx.textBaseline = 'middle';
+  ctx.textAlign = 'left';
+  
+  const repeatText = (text + '  •  ').repeat(30);
+  ctx.fillText(repeatText, 0, canvas.height / 2);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.repeat.set(5, 1); // << tăng độ lặp
+  return texture;
+    const ringGeometry = new THREE.RingGeometry(5.8, 6, 128);
+const ringMaterial = new THREE.MeshBasicMaterial({
+  map: ringTextTexture,
+  side: THREE.DoubleSide,
+  transparent: true
+});
+ringText = new THREE.Mesh(ringGeometry, ringMaterial);
+ringText.rotation.x = -Math.PI / 2;
+scene.add(ringText);
+    
+}
 
   // Resize
   window.addEventListener('resize', onWindowResize, false);
