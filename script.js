@@ -85,7 +85,7 @@ function init() {
   scene.add(stars);
 
   // Chữ chạy quanh trái đất
-  const ringTextTexture = createTextTexture("🌍 Hello Earth • Orbiting • Satellite View 🌍 ");
+  const ringTextTexture = createTextTexture("🌍 YÊU HUYỀN RẤT NHIỀU 🌍 ");
   const ringMaterial = new THREE.MeshBasicMaterial({ map: ringTextTexture, transparent: true });
   const ringGeometry = new THREE.RingGeometry(5.8, 6, 128);
   ringText = new THREE.Mesh(ringGeometry, ringMaterial);
