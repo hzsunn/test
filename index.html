@@ -1,32 +1,39 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>HPBD Em</title>
-  <link rel="stylesheet" href="banh.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galaxy with Zoom Effect</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.152.2/build/three.module.js",
+        "three/addons/controls/OrbitControls.js": "https://unpkg.com/three@0.152.2/examples/jsm/controls/OrbitControls.js",
+        "three/examples/jsm/loaders/FontLoader.js": "https://unpkg.com/three@0.152.2/examples/jsm/loaders/FontLoader.js",
+        "three/examples/jsm/geometries/TextGeometry.js": "https://unpkg.com/three@0.152.2/examples/jsm/geometries/TextGeometry.js"
+      }
+    }
+    </script>
 </head>
-<body>
-  <div class="banner">
-    <button id="giftBtn">🎁 MỞ NGAY</button>
-    <div id="hbdText" class="hidden">🎉 CHÚC MỪNG SINH NHẬT HUYỀN 🎉</div>
-    <div class="slider hidden" style="--quantity: 10">
-      <div class="item" style="--position: 1"><img src="img/img1.JPG" alt="Anh1"></div>
-      <div class="item" style="--position: 2"><img src="img/img2.JPG" alt="Anh2"></div>
-      <div class="item" style="--position: 3"><img src="img/img3.JPG" alt="Anh3"></div>
-      <div class="item" style="--position: 4"><img src="img/img4.JPG" alt="Anh4"></div>
-      <div class="item" style="--position: 5"><img src="img/img5.jpg" alt="Anh5"></div>
-      <div class="item" style="--position: 6"><img src="img/img6.PNG" alt="Anh6"></div>
-      <div class="item" style="--position: 7"><img src="img/img7.JPG" alt="Anh7"></div>
-      <div class="item" style="--position: 8"><img src="img/img8.JPG" alt="Anh8"></div>
-      <div class="item" style="--position: 9"><img src="img/img9.JPG" alt="Anh9"></div>
-      <div class="item" style="--position: 10"><img src="img/img10.JPG" alt="Anh10"></div>
-    </div>
-    <img class="cake hidden" src="img/cake.PNG" alt="Bánh sinh nhật">
-    <audio id="birthday-audio" src="img/hpbd.mp3" preload="auto"></audio>
-    <canvas id="fireworks"></canvas>
-  </div>
 
-  <script src="phaohoa.js"></script>
+<body>
+  <audio id="bg-music" autoplay loop>
+   <source src="" type="audio/mpeg" />
+  </audio>
+    <div id="container"></div>
+    <div id="landscape-warning">
+      <div class="warning-content">
+        <div class="rotate-icon"></div>
+        <h1>Stellar Bloom</h1>
+        <h1>Tinh Cầu</h1>
+        <div class="stars-bg"></div>
+      </div>
+    </div>
+    <div id="dark-overlay"></div>
+    <div id="info">
+      
+    </div>
+    <script type="module" src="script.js"></script>
 </body>
 </html>
