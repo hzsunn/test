@@ -3,11 +3,11 @@ const commonThumbnail = "music/IMG_0947.jpeg";
 const tracks = [
   { name: "Em Ơi Em Đừng Khóc", file: "music/Emoiem.m4a" },
   { name: "Đừng Yêu Ai Em Nhé", file: "music/Dyaen.m4a" },
-  // 👉 thêm bài khác tại đây
+  // Thêm bài khác tại đây
 ];
 
 let currentTrackIndex = 0;
-let startTime = parseInt(localStorage.getItem("totalPlayTime")) || 0;
+let startTime = parseInt(localStorage.getItem("totalPlayTime") || 0);
 
 const currentTimeEl = document.getElementById("current-time");
 const durationEl = document.getElementById("duration");
@@ -24,7 +24,6 @@ const progressBar = document.getElementById("progress-bar");
 const searchInput = document.getElementById("search");
 const wave = document.getElementById("wave");
 const playTimeCounter = document.getElementById("play-time");
-const karaokeContainer = document.getElementById("karaoke");
 
 function formatTime(time) {
   const minutes = Math.floor(time / 60);
@@ -46,39 +45,11 @@ function renderPlaylist(filter = "") {
 
   filteredTracks.forEach((track, index) => {
     const li = document.createElement("li");
-    li.innerHTML = `<div class="text"><strong>${index + 1}. ${track.name}</strong></div>`;
+    li.innerHTML = `
+      <div class="text"><strong>${index + 1}. ${track.name}</strong></div>
+    `;
     li.addEventListener("click", () => playTrack(tracks.indexOf(track)));
     playlistEl.appendChild(li);
-  });
-}
-
-function showKaraoke(lrcText) {
-  if (!karaokeContainer) return;
-  karaokeContainer.innerHTML = "";
-
-  const lines = lrcText.split("\n").map(line => {
-    const match = line.match(/\[(\d{2}):(\d{2})(?:\.(\d{2}))?\](.*)/);
-    if (match) {
-      const time = parseInt(match[1]) * 60 + parseInt(match[2]);
-      return { time, text: match[4].trim() };
-    }
-    return null;
-  }).filter(Boolean);
-
-  lines.forEach(line => {
-    const p = document.createElement("p");
-    p.textContent = line.text;
-    p.dataset.time = line.time;
-    karaokeContainer.appendChild(p);
-  });
-
-  audioPlayer.addEventListener("timeupdate", () => {
-    const currentTime = Math.floor(audioPlayer.currentTime);
-    const allLines = karaokeContainer.querySelectorAll("p");
-    allLines.forEach(p => {
-      const lineTime = parseInt(p.dataset.time);
-      p.classList.toggle("active", lineTime === currentTime);
-    });
   });
 }
 
@@ -94,7 +65,8 @@ function playTrack(index) {
   showKaraoke(lrcText);
 
   audioPlayer.play();
-  playIcon.classList.replace("fa-play", "fa-pause");
+  playIcon.classList.remove("fa-play");
+  playIcon.classList.add("fa-pause");
   document.body.classList.add("playing");
   wave.classList.add("playing");
 }
@@ -102,12 +74,14 @@ function playTrack(index) {
 playBtn.addEventListener("click", () => {
   if (audioPlayer.paused) {
     audioPlayer.play();
-    playIcon.classList.replace("fa-play", "fa-pause");
+    playIcon.classList.remove("fa-play");
+    playIcon.classList.add("fa-pause");
     document.body.classList.add("playing");
     wave.classList.add("playing");
   } else {
     audioPlayer.pause();
-    playIcon.classList.replace("fa-pause", "fa-play");
+    playIcon.classList.remove("fa-pause");
+    playIcon.classList.add("fa-play");
     document.body.classList.remove("playing");
     wave.classList.remove("playing");
   }
@@ -134,6 +108,8 @@ audioPlayer.addEventListener("timeupdate", () => {
     playTimeCounter.textContent = `⏱️ Đã phát: ${formatTime(startTime)}`;
   }
   localStorage.setItem("totalPlayTime", startTime);
+
+  syncKaraoke(audioPlayer.currentTime);
 });
 
 progressBar.addEventListener("input", () => {
@@ -163,5 +139,45 @@ document.addEventListener("touchstart", (e) => {
     searchInput.blur();
   }
 });
+
+function showKaraoke(lrcText) {
+  const karaokeBox = document.getElementById("karaoke-lines");
+  karaokeBox.innerHTML = "";
+
+  const lines = lrcText.split("\n").filter(line => line.trim() !== "");
+  const parsedLines = lines.map(line => {
+    const match = line.match(/\[(\d+):(\d+\.\d+)\](.*)/);
+    if (!match) return null;
+    const time = parseInt(match[1]) * 60 + parseFloat(match[2]);
+    const text = match[3].trim();
+    return { time, text };
+  }).filter(Boolean);
+
+  parsedLines.forEach(item => {
+    const div = document.createElement("div");
+    div.classList.add("karaoke-line");
+    div.dataset.time = item.time;
+    div.textContent = item.text;
+    karaokeBox.appendChild(div);
+  });
+
+  audioPlayer.karaokeLines = parsedLines;
+}
+
+function syncKaraoke(currentTime) {
+  const karaokeBox = document.getElementById("karaoke-lines");
+  const lines = karaokeBox.querySelectorAll(".karaoke-line");
+
+  lines.forEach((line, i) => {
+    const time = parseFloat(line.dataset.time);
+    const nextTime = i < lines.length - 1 ? parseFloat(lines[i + 1].dataset.time) : Infinity;
+
+    if (currentTime >= time && currentTime < nextTime) {
+      line.classList.add("active");
+    } else {
+      line.classList.remove("active");
+    }
+  });
+}
 
 renderPlaylist();
