@@ -1,4 +1,4 @@
-const commonThumbnail = "music/IMG_0947.jpeg";
+const commonThumbnail = "bgr.JPG";
 
 const tracks = [
   { name: "Em Ơi Em Đừng Khóc", file: "music/Emoiem.m4a" },
