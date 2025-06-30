@@ -1,7 +1,7 @@
 const commonThumbnail = "music/IMG_0947.jpeg";
 
 const tracks = [
-  { name: "Em Ơi Em Đừng Khóc", file: "music/Emoiem.m4a" },
+  { name: "Em Ơi Em Đừng Khóc", file: "Emoiem.m4a" },
   { name: "Đừng Yêu Ai Em Nhé", file: "music/Dyaen.m4a" },
   // 👉 thêm các bài khác tại đây
 ];
