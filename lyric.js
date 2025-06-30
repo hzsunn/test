@@ -1,9 +1,5 @@
 const lyricsData = {
-  [ti:E Là Không Thể]
-[ar:Anh Quân Idol x Đông Thiên Đức]
-[al:Single]
-[length:03:50]
-[by:ChatGPT]
+"Em Ơi Em Đừng Khóc": `
 
 [00:00.00] ♪ E Là Không Thể – Anh Quân Idol x Đông Thiên Đức ♪
 
