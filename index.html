@@ -1,39 +1,75 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galaxy with Zoom Effect</title>
-    <link rel="stylesheet" href="style.css">
-    <script type="importmap">
-    {
-      "imports": {
-        "three": "https://unpkg.com/three@0.152.2/build/three.module.js",
-        "three/addons/controls/OrbitControls.js": "https://unpkg.com/three@0.152.2/examples/jsm/controls/OrbitControls.js",
-        "three/examples/jsm/loaders/FontLoader.js": "https://unpkg.com/three@0.152.2/examples/jsm/loaders/FontLoader.js",
-        "three/examples/jsm/geometries/TextGeometry.js": "https://unpkg.com/three@0.152.2/examples/jsm/geometries/TextGeometry.js"
-      }
+ 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Yêu Huyền ❤️</title>
+   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+ <style>
+    #page-title {
+      font-family: 'Great Vibes', cursive;
+      font-size: 36px;
+      color: hotpink;
+      text-align: center;
+      margin: 20px 0;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
-    </script>
+    
+  </style>
 </head>
-
 <body>
-  <audio id="bg-music" autoplay loop>
-   <source src="" type="audio/mpeg" />
-  </audio>
-    <div id="container"></div>
-    <div id="landscape-warning">
-      <div class="warning-content">
-        <div class="rotate-icon"></div>
-        <h1>Stellar Bloom</h1>
-        <h1>Tinh Cầu</h1>
-        <div class="stars-bg"></div>
+
+  <div class="app-container">
+    <h1 id="page-title">Tài sản của Huyền</h1>
+   <div class="search-wrapper">
+  <input type="search" id="search" placeholder="Tìm bài hát..." />
+  <button id="search-btn"><i class="fa fa-search"></i></button>
+   </div>
+   <div id="track-count"> Tổng số bài hát: 0</div>
+    <ul id="playlist" class="playlist"></ul>
+  </div>
+
+  <!-- Trình phát cố định dưới -->
+  <div class="zing-player">
+    <div class="left">
+      <img id="track-img" src="music/IMG_0947.jpeg" />
+      <div class="waveform" id="wave">
+        <div></div><div></div><div></div><div></div><div></div>
+      </div>
+      <div class="info">
+        <div id="track-title">Chưa chọn bài</div>
+        <div id="track-artist">Không rõ nghệ sĩ</div>
       </div>
     </div>
-    <div id="dark-overlay"></div>
-    <div id="info">
-      
-    </div>
-    <script type="module" src="script.js"></script>
+       <!-- 👇 Karaoke nằm bên phải -->
+  <div class="lyrics-box">
+    <div id="karaoke-lines" class="karaoke-lines"></div>
+  </div>
+    <div class="controls">
+  <button id="prev-btn" class="btn">
+    <i class="fa-solid fa-backward-step"></i>
+  </button>
+
+  <button id="play-btn" class="btn">
+    <i id="play-icon" class="fa-solid fa-play"></i>
+  </button>
+
+  <button id="next-btn" class="btn">
+    <i class="fa-solid fa-forward-step"></i>
+  </button>
+<div class="time-display">
+    <span id="current-time">0:00</span> / <span id="duration">0:00</span>
+  </div>
+
+
+  <input type="range" id="progress-bar" value="0" />
+
+  </div>
+
+  <audio id="audio-player"></audio>
+  <script src="script.js"></script>
 </body>
 </html>
