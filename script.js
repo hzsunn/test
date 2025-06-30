@@ -1,6 +1,9 @@
 const tracks = [
   { name: "Em Ơi Em Đừng Khóc", file: "Emoiem.m4a" },
   ];
+const track = tracks[index];
+const lrcText = lyricsData[track.name] || "";
+showKaraoke(lrcText);
 let currentTrackIndex = 0;
 const currentTimeEl = document.getElementById("current-time");
 const durationEl = document.getElementById("duration");
