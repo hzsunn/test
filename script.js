@@ -1,13 +1,13 @@
 const commonThumbnail = "music/IMG_0947.jpeg";
 
 const tracks = [
-  { name: "Em Ơi Em Đừng Khóc", file: "Emoiem.m4a" },
+  { name: "Em Ơi Em Đừng Khóc", file: "music/Emoiem.m4a" },
   { name: "Đừng Yêu Ai Em Nhé", file: "music/Dyaen.m4a" },
-  // 👉 thêm các bài khác tại đây
+  // 👉 thêm bài khác tại đây
 ];
 
 let currentTrackIndex = 0;
-let startTime = localStorage.getItem("totalPlayTime") || 0;
+let startTime = parseInt(localStorage.getItem("totalPlayTime")) || 0;
 
 const currentTimeEl = document.getElementById("current-time");
 const durationEl = document.getElementById("duration");
@@ -24,6 +24,7 @@ const progressBar = document.getElementById("progress-bar");
 const searchInput = document.getElementById("search");
 const wave = document.getElementById("wave");
 const playTimeCounter = document.getElementById("play-time");
+const karaokeContainer = document.getElementById("karaoke");
 
 function formatTime(time) {
   const minutes = Math.floor(time / 60);
@@ -45,11 +46,39 @@ function renderPlaylist(filter = "") {
 
   filteredTracks.forEach((track, index) => {
     const li = document.createElement("li");
-    li.innerHTML = `
-      <div class="text"><strong>${index + 1}. ${track.name}</strong></div>
-    `;
+    li.innerHTML = `<div class="text"><strong>${index + 1}. ${track.name}</strong></div>`;
     li.addEventListener("click", () => playTrack(tracks.indexOf(track)));
     playlistEl.appendChild(li);
+  });
+}
+
+function showKaraoke(lrcText) {
+  if (!karaokeContainer) return;
+  karaokeContainer.innerHTML = "";
+
+  const lines = lrcText.split("\n").map(line => {
+    const match = line.match(/\[(\d{2}):(\d{2})(?:\.(\d{2}))?\](.*)/);
+    if (match) {
+      const time = parseInt(match[1]) * 60 + parseInt(match[2]);
+      return { time, text: match[4].trim() };
+    }
+    return null;
+  }).filter(Boolean);
+
+  lines.forEach(line => {
+    const p = document.createElement("p");
+    p.textContent = line.text;
+    p.dataset.time = line.time;
+    karaokeContainer.appendChild(p);
+  });
+
+  audioPlayer.addEventListener("timeupdate", () => {
+    const currentTime = Math.floor(audioPlayer.currentTime);
+    const allLines = karaokeContainer.querySelectorAll("p");
+    allLines.forEach(p => {
+      const lineTime = parseInt(p.dataset.time);
+      p.classList.toggle("active", lineTime === currentTime);
+    });
   });
 }
 
@@ -61,13 +90,11 @@ function playTrack(index) {
   trackTitle.textContent = track.name;
   trackArtist.textContent = "Đặng Hồng";
 
-  // ✅ Hiển thị lời karaoke từ lyric.js
   const lrcText = lyricsData[track.name] || "";
   showKaraoke(lrcText);
 
   audioPlayer.play();
-  playIcon.classList.remove("fa-play");
-  playIcon.classList.add("fa-pause");
+  playIcon.classList.replace("fa-play", "fa-pause");
   document.body.classList.add("playing");
   wave.classList.add("playing");
 }
@@ -75,14 +102,12 @@ function playTrack(index) {
 playBtn.addEventListener("click", () => {
   if (audioPlayer.paused) {
     audioPlayer.play();
-    playIcon.classList.remove("fa-play");
-    playIcon.classList.add("fa-pause");
+    playIcon.classList.replace("fa-play", "fa-pause");
     document.body.classList.add("playing");
     wave.classList.add("playing");
   } else {
     audioPlayer.pause();
-    playIcon.classList.remove("fa-pause");
-    playIcon.classList.add("fa-play");
+    playIcon.classList.replace("fa-pause", "fa-play");
     document.body.classList.remove("playing");
     wave.classList.remove("playing");
   }
@@ -104,7 +129,6 @@ audioPlayer.addEventListener("timeupdate", () => {
   currentTimeEl.textContent = formatTime(audioPlayer.currentTime);
   durationEl.textContent = formatTime(audioPlayer.duration);
 
-  // Cập nhật tổng thời gian phát
   startTime++;
   if (playTimeCounter) {
     playTimeCounter.textContent = `⏱️ Đã phát: ${formatTime(startTime)}`;
