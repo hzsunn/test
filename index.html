@@ -2,99 +2,85 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title> Ảnh GIF</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Thư viện GIF</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      padding: 20px;
-      background: #f7f7f7;
+      padding: 10px;
+      background: #fefefe;
       text-align: center;
     }
 
     h1 {
       color: #ff4081;
-    }
-
-    input[type="file"] {
-      margin: 20px 0;
+      font-size: 22px;
+      margin-bottom: 15px;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 15px;
-      padding: 10px;
-    }
-
-    .gif-item {
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      overflow: hidden;
-      padding: 10px;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      max-width: 800px;
+      margin: 0 auto;
     }
 
     .gif-item img {
       width: 100%;
       height: auto;
       border-radius: 6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: transform 0.2s ease;
     }
 
-    .download-btn {
-      margin-top: 8px;
-      display: inline-block;
-      padding: 6px 12px;
-      background-color: #ff4081;
-      color: white;
-      text-decoration: none;
-      border-radius: 5px;
-      font-size: 14px;
+    .gif-item img:hover {
+      transform: scale(1.03);
     }
 
-    .download-btn:hover {
-      background-color: #e73370;
+    @media (max-width: 600px) {
+      .grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 400px) {
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
   </style>
 </head>
 <body>
 
-  <h1>📂 Ảnh GIF của Huyền</h1>
-  <input type="file" id="gifInput" accept=".gif" multiple>
+  <h1>GIF của Huyền</h1>
 
   <div class="grid" id="gifGrid"></div>
 
   <script>
-    const gifInput = document.getElementById('gifInput');
+    const gifList = [
+      'huyen-cuoi.gif',
+      'meo-nhay.gif',
+      'gau-dang-yeu.gif',
+      'cuoi-to.gif',
+      'cat-wink.gif'
+    ];
+
     const gifGrid = document.getElementById('gifGrid');
 
-    gifInput.addEventListener('change', function () {
-      gifGrid.innerHTML = "";
+    gifList.forEach(fileName => {
+      const url = `gifs/${fileName}`;
+      const item = document.createElement('div');
+      item.className = 'gif-item';
 
-      Array.from(this.files).forEach(file => {
-        if (file.type === 'image/gif') {
-          const reader = new FileReader();
-          reader.onload = function (e) {
-            const gifUrl = e.target.result;
+      const img = document.createElement('img');
+      img.src = url;
+      img.alt = fileName;
+      img.onclick = () => window.open(url, '_blank');
 
-            const container = document.createElement('div');
-            container.className = 'gif-item';
-
-            const img = document.createElement('img');
-            img.src = gifUrl;
-
-            const downloadLink = document.createElement('a');
-            downloadLink.href = gifUrl;
-            downloadLink.download = file.name;
-            downloadLink.className = 'download-btn';
-            downloadLink.textContent = 'Tải về';
-
-            container.appendChild(img);
-            container.appendChild(downloadLink);
-            gifGrid.appendChild(container);
-          }
-          reader.readAsDataURL(file);
-        }
-      });
+      item.appendChild(img);
+      gifGrid.appendChild(item);
     });
   </script>
 
