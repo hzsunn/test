@@ -1,76 +1,102 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
- 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Yêu Huyền ❤️</title>
-   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
- <style>
-    #page-title {
-      font-family: 'Great Vibes', cursive;
-      font-size: 36px;
-      color: hotpink;
+  <meta charset="UTF-8">
+  <title> Ảnh GIF</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f7f7f7;
       text-align: center;
-      margin: 20px 0;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
-    
+
+    h1 {
+      color: #ff4081;
+    }
+
+    input[type="file"] {
+      margin: 20px 0;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 15px;
+      padding: 10px;
+    }
+
+    .gif-item {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      overflow: hidden;
+      padding: 10px;
+    }
+
+    .gif-item img {
+      width: 100%;
+      height: auto;
+      border-radius: 6px;
+    }
+
+    .download-btn {
+      margin-top: 8px;
+      display: inline-block;
+      padding: 6px 12px;
+      background-color: #ff4081;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    .download-btn:hover {
+      background-color: #e73370;
+    }
   </style>
 </head>
 <body>
 
-  <div class="app-container">
-    <h1 id="page-title">Tài sản của Huyền</h1>
-   <div class="search-wrapper">
-  <input type="search" id="search" placeholder="Tìm bài hát..." />
-  <button id="search-btn"><i class="fa fa-search"></i></button>
-   </div>
-   <div id="track-count"> Tổng số bài hát: 0</div>
-    <ul id="playlist" class="playlist"></ul>
-  </div>
+  <h1>📂 Ảnh GIF của Huyền</h1>
+  <input type="file" id="gifInput" accept=".gif" multiple>
 
-  <!-- Trình phát cố định dưới -->
-  <div class="zing-player">
-    <div class="left">
-      <img id="track-img" src="bgr.JPG" />
-      <div class="waveform" id="wave">
-        <div></div><div></div><div></div><div></div><div></div>
-      </div>
-      <div class="info">
-        <div id="track-title">Chưa chọn bài</div>
-        <div id="track-artist">Không rõ nghệ sĩ</div>
-      </div>
-    </div>
-       <!-- 👇 Karaoke nằm bên phải -->
-  <div class="lyrics-box">
-    <div id="karaoke" class="karaoke-lines"></div>
-  </div>
-    <div class="controls">
-  <button id="prev-btn" class="btn">
-    <i class="fa-solid fa-backward-step"></i>
-  </button>
+  <div class="grid" id="gifGrid"></div>
 
-  <button id="play-btn" class="btn">
-    <i id="play-icon" class="fa-solid fa-play"></i>
-  </button>
+  <script>
+    const gifInput = document.getElementById('gifInput');
+    const gifGrid = document.getElementById('gifGrid');
 
-  <button id="next-btn" class="btn">
-    <i class="fa-solid fa-forward-step"></i>
-  </button>
-<div class="time-display">
-    <span id="current-time">0:00</span> / <span id="duration">0:00</span>
-  </div>
+    gifInput.addEventListener('change', function () {
+      gifGrid.innerHTML = "";
 
+      Array.from(this.files).forEach(file => {
+        if (file.type === 'image/gif') {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const gifUrl = e.target.result;
 
-  <input type="range" id="progress-bar" value="0" />
+            const container = document.createElement('div');
+            container.className = 'gif-item';
 
-  </div>
+            const img = document.createElement('img');
+            img.src = gifUrl;
 
-  <audio id="audio-player"></audio>
-   <script src="lyrics.js"></script>
-  <script src="script.js"></script>
+            const downloadLink = document.createElement('a');
+            downloadLink.href = gifUrl;
+            downloadLink.download = file.name;
+            downloadLink.className = 'download-btn';
+            downloadLink.textContent = 'Tải về';
+
+            container.appendChild(img);
+            container.appendChild(downloadLink);
+            gifGrid.appendChild(container);
+          }
+          reader.readAsDataURL(file);
+        }
+      });
+    });
+  </script>
+
 </body>
 </html>
